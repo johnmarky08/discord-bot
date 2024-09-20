@@ -1,0 +1,37 @@
+entrypoint = "server.js"
+modules = ["nodejs-20"]
+hidden = [".config", "package-lock.json"]
+
+[gitHubImport]
+requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
+
+[nix]
+channel = "stable-24_05"
+
+[unitTest]
+language = "nodejs"
+
+[deployment]
+run = ["node", "index.js"]
+deploymentTarget = "cloudrun"
+ignorePorts = false
+
+[[ports]]
+localPort = 8080
+externalPort = 8080
+
+[[ports]]
+localPort = 33123
+externalPort = 80
+
+[[ports]]
+localPort = 35209
+externalPort = 3001
+
+[[ports]]
+localPort = 38423
+externalPort = 3000
+
+[[ports]]
+localPort = 41519
+externalPort = 3002
