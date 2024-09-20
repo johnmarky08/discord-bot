@@ -73,7 +73,7 @@ client.on("messageCreate", (message) => {
   if (message.content.startsWith(`${global.PREFIX}`)) {
     if (message.content.slice(1).split(" ")[0] in commands)
       try {
-        var command = commands[message.content.slic(1).split(" ")[0]];
+        var command = commands[message.content.slice(1).split(" ")[0]];
         var args = message.content.split(" ").splice(1).join(" ") ?? "";
         command.execute(message, args);
       } catch (error) {
