@@ -13,6 +13,9 @@ global.config = require("./config.json");
 global.PREFIX = global.config.PREFIX;
 const commands = {};
 global.GuildText = Discord.ChannelType.GuildText;
+global.Category = Discord.ChannelType.GuildCategory;
+global.ViewChannel = Discord.PermissionFlagsBits.ViewChannel;
+global.SendMessages = Discord.PermissionFlagsBits.SendMessages;
 
 //LOGS
 console.loaded = log.loaded;
@@ -84,6 +87,6 @@ client.on("messageCreate", (message) => {
   }
 });
 
-update(client, Discord.PermissionFlagsBits);
+update(client);
 
 client.login(process.env["token"]);
