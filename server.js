@@ -1,16 +1,18 @@
 //IMPORTS
 const express = require("express");
-const { Client } = require("discord.js");
-const fs = require("fs");
+const Discord = require("discord.js");
+const fs = require("fs-extra");
 const path = require("path");
 const log = require("./settings/log.js");
 const messageLog = require("./settings/messageLog.js");
 const update = require("./settings/events/update.js");
+const Client = Discord.Client;
 
 //GLOBALS AND CONSTANTS
 global.config = require("./config.json");
 global.PREFIX = global.config.PREFIX;
 const commands = {};
+global.GuildText = Discord.ChannelType.GuildText;
 
 //LOGS
 console.loaded = log.loaded;
@@ -82,6 +84,6 @@ client.on("messageCreate", (message) => {
   }
 });
 
-update(client);
+update(client, Discord.PermissionFlagsBits);
 
 client.login(process.env["token"]);

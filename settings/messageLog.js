@@ -23,7 +23,8 @@ module.exports = function (message) {
   var msg = message.content;
   var serverName = message.guild.name;
   var channelName = message.channel.name;
-  
+
+  if (!msg || (msg == "")) return;
 
   console.message(
     chalk.hex("#" + random)(`${serverName} | ${channelName}`) +
@@ -34,4 +35,5 @@ module.exports = function (message) {
       `\n` +
       chalk.white(`◆━━━━━━━━━━◆━━━━━━━━━◆━━━━━━━━◆`),
   );
+  return;
 };
