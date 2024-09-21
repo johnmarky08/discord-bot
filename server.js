@@ -6,12 +6,12 @@ const path = require("path");
 const log = require("./settings/log.js");
 const messageLog = require("./settings/messageLog.js");
 const update = require("./settings/events/update.js");
-const Client = Discord.Client;
 
 //GLOBALS AND CONSTANTS
+const Client = Discord.Client;
+const commands = {};
 global.config = require("./config.json");
 global.PREFIX = global.config.PREFIX;
-const commands = {};
 global.GuildText = Discord.ChannelType.GuildText;
 global.Category = Discord.ChannelType.GuildCategory;
 global.ViewChannel = Discord.PermissionFlagsBits.ViewChannel;
@@ -69,6 +69,13 @@ client.on("ready", () => {
     `${client.guilds.cache.size} Server/s, ${client.users.cache.size} Member/s, ${client.channels.cache.size} Channel/s`,
   );
   client.user.setActivity(`[ ${global.PREFIX} ] Kiro`, { type: "WATCHING" });
+});
+client.on("guildCreate", async (guild) => {
+  await guild.channels.fetch();
+  update
+    .setup(guild, global.config.main_channels)
+    .then((annChannel) => annChannel.send("Kiro Bot is Connected!"))
+    .catch((e) => console.error(e.toString()));
 });
 
 //EXECUTE COMMANDS

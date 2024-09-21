@@ -1,6 +1,5 @@
 const knights = require("knights-canvas");
 const fs = require("fs-extra");
-const mainCategory = "Server Updates";
 
 const bg = [
   "https://i.imgur.com/rLAPa7R.jpg",
@@ -18,21 +17,78 @@ const bg = [
 
 module.exports = function (client) {
   client.on("guildMemberAdd", (message) => {
-    var channelName = "welcome";
-    setup(message, channelName).then((currentChannel) =>
-      welcome(message, currentChannel),
+    if (message.user.bot) return;
+    const channelName = global.config.main_channels[0];
+    const currentChannel = message.guild.channels.cache.find(
+      (chanl) => chanl.name === channelName,
     );
+    welcome(message, currentChannel, client);
   });
 
   client.on("guildMemberRemove", (message) => {
-    var channelName = "goodbye";
-    setup(message, channelName).then((currentChannel) =>
-      goodbye(message, currentChannel),
+    if (message.user.bot) return;
+    const channelName = global.config.main_channels[1];
+    const currentChannel = message.guild.channels.cache.find(
+      (chanl) => chanl.name === channelName,
     );
+    goodbye(message, currentChannel, client);
   });
 };
 
-async function welcome(message, currentChannel) {
+module.exports.setup = async function (guild, channelNames) {
+  let category = await guild.channels.cache.find(
+      (c) => c.name == global.config.main_category,
+    ),
+    welcomeChannel = await guild.channels.cache.find(
+      (c) => c.name == global.config.main_channels[0],
+    ),
+    goodbyeChannel = await guild.channels.cache.find(
+      (c) => c.name == global.config.main_channels[1],
+    ),
+    annChannel = await guild.channels.cache.find(
+      (c) => c.name == global.config.main_channels[2],
+    );
+  if (category || welcomeChannel || goodbyeChannel || annChannel)
+    return annChannel;
+  else {
+    await guild.channels
+      .create({
+        name: global.config.main_category,
+        type: global.Category,
+        permissionOverwrites: [
+          {
+            id: guild.id,
+            allow: [global.ViewChannel],
+            deny: [global.SendMessages],
+          },
+        ],
+      })
+      .then((categ) => (category = categ))
+      .catch((e) => console.error(e.toString()));
+    for (cN of channelNames) {
+      await guild.channels
+        .create({
+          name: cN,
+          type: global.GuildText,
+          parent: category,
+          permissionOverwrites: [
+            {
+              id: guild.id,
+              allow: [global.ViewChannel],
+              deny: [global.SendMessages],
+            },
+          ],
+        })
+        .then((chl) => {
+          if (cN === "announcements") annChannel = chl;
+        })
+        .catch((e) => console.error(e.toString()));
+    }
+  }
+  return annChannel;
+};
+
+async function welcome(message, currentChannel, client) {
   var threadName = message.guild.name;
   var participantIDs = message.guild.members.cache.size;
   var imageSrc = message.guild.iconURL({ extension: "png" });
@@ -50,7 +106,8 @@ async function welcome(message, currentChannel) {
     .toAttachment();
   var data = image.toBuffer();
   fs.writeFileSync(__dirname + "/../../commands/cache/welcome.jpg", data);
-  return currentChannel
+  const textChannel = await client.channels.fetch(currentChannel.id);
+  textChannel
     .send({
       content: msg,
       files: [
@@ -64,10 +121,11 @@ async function welcome(message, currentChannel) {
     .then(() => {
       fs.unlinkSync(__dirname + `/../../commands/cache/welcome.jpg`);
       console.cmdLoaded(`${userMentions} joins the ${threadName} server!`);
-    });
+    })
+    .catch((err) => console.error(err.toString()));
 }
 
-async function goodbye(message, currentChannel) {
+async function goodbye(message, currentChannel, client) {
   var threadName = message.guild.name;
   var participantIDs = message.guild.members.cache.size;
   var imageSrc = message.guild.iconURL({ extension: "png" });
@@ -85,7 +143,8 @@ async function goodbye(message, currentChannel) {
     .toAttachment();
   var data = image.toBuffer();
   fs.writeFileSync(__dirname + "/../../commands/cache/goodbye.jpg", data);
-  return currentChannel
+  const textChannel = await client.channels.fetch(currentChannel.id);
+  textChannel
     .send({
       content: msg,
       files: [
@@ -99,49 +158,6 @@ async function goodbye(message, currentChannel) {
     .then(() => {
       fs.unlinkSync(__dirname + `/../../commands/cache/goodbye.jpg`);
       console.cmdLoaded(`${userMentions} leaves the ${threadName} server!`);
-    });
-}
-
-async function setup(message, channelName) {
-  var currentChannel = await message.guild.channels.cache.find(
-    (chanl) => chanl.name === channelName,
-  );
-  var category = await message.guild.channels.cache.find(
-    (c) => c.name == mainCategory,
-  );
-  if (!category) {
-    message.guild.channels
-      .create({
-        name: mainCategory,
-        type: global.Category,
-        permissionOverwrites: [
-          {
-            id: message.guild.id,
-            allow: [global.ViewChannel],
-            deny: [global.SendMessages],
-          },
-        ],
-      })
-      .then((categ) => (category = categ));
-  }
-  if (!currentChannel) {
-    message.guild.channels
-      .create({
-        name: channelName,
-        type: global.GuildText,
-        permissionOverwrites: [
-          {
-            id: message.guild.id,
-            allow: [global.ViewChannel],
-            deny: [global.SendMessages],
-          },
-        ],
-      })
-      .then((chl) => {
-        currentChannel = chl;
-      });
-  }
-  if (currentChannel.parentID !== category.id)
-    currentChannel.setParent(category.id);
-  return currentChannel;
+    })
+    .catch((err) => console.error(err.toString()));
 }

@@ -1,3 +1,5 @@
 {
-  "PREFIX": "!"
+  "PREFIX": "!",
+  "main_category": "Server Updates",
+  "main_channels": ["welcome", "goodbye", "announcements"]
 }
