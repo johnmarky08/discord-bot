@@ -37,6 +37,7 @@ async function execute(message, args) {
       );
     }
   } catch {
+    message.reply("Please Wait... ⚙️")
     var one = 10;
     var page = parseInt(args) || 1;
     var res = await axios.get(
@@ -56,7 +57,7 @@ async function execute(message, args) {
     for (let item of bago) {
       text += `〘 ${++slice} 〙 ` + global.config.PREFIX + item + "\n";
     }
-    return message.channel.send(
+    return message.reply(
       `『 LIST OF COMMANDS 』\n\n` +
         text +
         "\n[ DYK ]: " +

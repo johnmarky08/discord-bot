@@ -1,3 +1,5 @@
+"use strict";
+
 //IMPORTS
 const express = require("express");
 const Discord = require("discord.js");
@@ -56,7 +58,7 @@ var filteredFiles = fs
   .readdirSync("./commands/")
   .filter((file) => file.indexOf(".") !== 0 && file.slice(-3) === ".js");
 filteredFiles.map((file) => {
-  fileName = require(path.join(__dirname, "commands", file));
+  var fileName = require(path.join(__dirname, "commands", file));
   commands[file.slice(0, -3)] = fileName;
   console.cmdLoaded(
     "Command " +
@@ -118,7 +120,7 @@ client.on("messageCreate", (message) => {
   messageLog(message);
   if (message.content.startsWith(`${global.PREFIX}`)) {
     if (message.content == global.PREFIX)
-      return message.channel.send(
+      return message.reply(
         global.langText(
           "settings",
           "prefix",
@@ -141,23 +143,19 @@ client.on("messageCreate", (message) => {
               Discord.PermissionFlagsBits.Administrator,
             )
           )
-            return message.channel.send(
-              global.langText("settings", "adminOnly"),
-            );
+            return message.reply(global.langText("settings", "adminOnly"));
         } else if (command.permission === 2) {
-          return message.channel.send(global.langText("settings", "mainte"));
+          return message.reply(global.langText("settings", "mainte"));
         } else if (command.permission === 3) {
           if (message.author.id !== "651240959417516070")
-            return message.channel.send(
-              "Only John Marky Dev Can Use This Command!",
-            );
+            return message.reply("Only John Marky Dev Can Use This Command!");
         }
         command.execute(message, args);
       } catch (error) {
         console.log("Error: " + error);
       }
     } else
-      return message.channel.send(
+      return message.reply(
         global.langText("settings", "wrongCommand", global.config.PREFIX),
       );
   }

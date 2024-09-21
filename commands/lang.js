@@ -15,13 +15,13 @@ function execute(message, args) {
     if (_lang === "en") {
       lang.lang = "tl";
       fs.writeFileSync(langPath, JSON.stringify(lang, null, 2), "utf-8");
-      return message.channel.send(
+      return message.reply(
         "Language Has Been Successfully Changed Into Tagalog (tl)",
       );
     } else {
       lang.lang = "en";
       fs.writeFileSync(langPath, JSON.stringify(lang, null, 2), "utf-8");
-      return message.channel.send(
+      return message.reply(
         "Language Has Been Successfully Changed Into English (en)",
       );
     }
@@ -29,11 +29,11 @@ function execute(message, args) {
     if (language[args]) {
       lang.lang = args;
       fs.writeFileSync(langPath, JSON.stringify(lang, null, 2), "utf-8");
-      return message.channel.send(
+      return message.reply(
         "Language Has Been Successfully Changed Into " + args.toUpperCase(),
       );
     } else {
-      return message.channel.send(
+      return message.reply(
         "The Language You Just Entered Is Not Available!",
       );
     }
