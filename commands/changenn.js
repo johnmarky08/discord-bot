@@ -2,7 +2,7 @@ const commandName = "changenn";
 const version = "1.5.9";
 const permission = 0;
 const description = "Change Your/Someone's Nickname";
-const credits = "John Marky Dev";
+const author = "John Marky Dev";
 
 function execute(message, args) {
   if (!args) {
@@ -37,6 +37,6 @@ module.exports = {
   version,
   permission,
   description,
-  credits,
+  author,
   execute,
 };

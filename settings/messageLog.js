@@ -27,7 +27,7 @@ module.exports = function (message) {
   if (!msg || (msg == "")) return;
 
   console.message(
-    chalk.hex("#" + random)(`${serverName} | ${channelName}`) +
+    chalk.hex("#" + random)(message.guild ? (`${serverName} | ${channelName}`) : "Direct Message") +
       chalk.hex("#" + random1)(`\nSender Name: ${nameUser}`) +
       chalk.hex("#" + random2)(`\nContent: ${msg}`) +
       `\n\n` +

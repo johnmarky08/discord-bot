@@ -3,15 +3,19 @@ const express = require("express");
 const Discord = require("discord.js");
 const fs = require("fs-extra");
 const path = require("path");
+const similar = require("string-similarity");
 const log = require("./settings/log.js");
 const messageLog = require("./settings/messageLog.js");
 const update = require("./settings/events/update.js");
 const lang = require("./settings/lang.json");
 const config = require("./config.json");
+const { langText } = require("./settings/events/index.js");
 
 //GLOBALS AND CONSTANTS
 const Client = Discord.Client;
 const commands = {};
+var listCommands = [];
+global.listOfCommands = listCommands;
 global.config = config;
 global.PREFIX = global.config.PREFIX;
 global.GuildText = Discord.ChannelType.GuildText;
@@ -19,6 +23,7 @@ global.Category = Discord.ChannelType.GuildCategory;
 global.ViewChannel = Discord.PermissionFlagsBits.ViewChannel;
 global.SendMessages = Discord.PermissionFlagsBits.SendMessages;
 global.lang = lang[global.config.lang];
+global.langText = langText;
 
 //LOGS
 console.loaded = log.loaded;
@@ -31,7 +36,7 @@ console.message = log.message;
 console.logg("Kiro Bot is Starting!");
 
 const app = express();
-const port = process.env.PORT || process.env.port || 8080;
+const port = process.env.PORT || process.env.port || 8000;
 app.listen(port, function (err) {
   if (err) {
     console.error("Failure To Launch Server");
@@ -59,6 +64,7 @@ filteredFiles.map((file) => {
       " Successfully Loaded → Version: " +
       fileName.version,
   );
+  listCommands.push(fileName.commandName);
 });
 
 console.logg(`Successfully Loaded: ${filteredFiles.length} Commands`);
@@ -71,8 +77,14 @@ client.on("ready", () => {
   console.logg(
     `${client.guilds.cache.size} Server/s, ${client.users.cache.size} Member/s, ${client.channels.cache.size} Channel/s`,
   );
-  client.user.setActivity(`[ ${global.PREFIX} ] ${global.config.BOTNAME}`, {
-    type: "WATCHING",
+  client.user.setPresence({
+    activities: [
+      {
+        name: `[ ${global.PREFIX} ] ${global.config.BOTNAME}`,
+        type: Discord.ActivityType.Watching,
+      },
+    ],
+    status: "online",
   });
 });
 client.on("guildCreate", async (guild) => {
@@ -99,17 +111,55 @@ client.on("guildDelete", (guild) => {
 //EXECUTE COMMANDS
 client.on("messageCreate", (message) => {
   if (!message.channel.guild || message.author.bot) return;
+  if (!message.guild) {
+    if (message.author.id !== "651240959417516070")
+      return message.reply("Sorry, I'm not available in DM!");
+  }
   messageLog(message);
   if (message.content.startsWith(`${global.PREFIX}`)) {
-    if (message.content.slice(1).split(" ")[0] in commands) {
+    if (message.content == global.PREFIX)
+      return message.channel.send(
+        global.langText(
+          "settings",
+          "prefix",
+          global.PREFIX,
+          require("moment-timezone")
+            .tz("Asia/Manila")
+            .format("hh:mm:ss A || MM/DD/YYYY"),
+        ),
+      );
+    var ms = message.content.slice(1).split(" ")[0];
+    var best = similar.findBestMatch(ms, listCommands);
+    var bestIndex = best.bestMatchIndex;
+    if (best.bestMatch.rating > 0.5) {
       try {
-        var command = commands[message.content.slice(1).split(" ")[0]];
+        var command = commands[listCommands[bestIndex]];
         var args = message.content.split(" ").splice(1).join(" ") ?? "";
+        if (command.permission == 1) {
+          if (
+            !message.member.permissions.has(
+              Discord.PermissionFlagsBits.Administrator,
+            )
+          )
+            return message.channel.send(
+              global.langText("settings", "adminOnly"),
+            );
+        } else if (command.permission === 2) {
+          return message.channel.send(global.langText("settings", "mainte"));
+        } else if (command.permission === 3) {
+          if (message.author.id !== "651240959417516070")
+            return message.channel.send(
+              "Only John Marky Dev Can Use This Command!",
+            );
+        }
         command.execute(message, args);
       } catch (error) {
         console.log("Error: " + error);
       }
-    } else return message.channel.send(global.lang.settings.wrongCommand.replace("%0", global.config.PREFIX));
+    } else
+      return message.channel.send(
+        global.langText("settings", "wrongCommand", global.config.PREFIX),
+      );
   }
 });
 
