@@ -149,10 +149,14 @@ client.on("messageCreate", (message) => {
         } else if (command.permission === 3) {
           if (message.author.id !== "651240959417516070")
             return message.reply("Only John Marky Dev Can Use This Command!");
+          command.execute(message, args);
+        } else {
+          return message.reply(
+            global.langText("settings", "wrongCommand", global.config.PREFIX),
+          );
         }
-        command.execute(message, args);
       } catch (error) {
-        console.log("Error: " + error);
+        console.error("Error: " + error);
       }
     } else
       return message.reply(
