@@ -68,14 +68,29 @@ client.on("ready", () => {
   console.logg(
     `${client.guilds.cache.size} Server/s, ${client.users.cache.size} Member/s, ${client.channels.cache.size} Channel/s`,
   );
-  client.user.setActivity(`[ ${global.PREFIX} ] Kiro`, { type: "WATCHING" });
+  client.user.setActivity(`[ ${global.PREFIX} ] ${global.config.BOTNAME}`, {
+    type: "WATCHING",
+  });
 });
 client.on("guildCreate", async (guild) => {
   await guild.channels.fetch();
   update
     .setup(guild, global.config.main_channels)
-    .then((annChannel) => annChannel.send("Kiro Bot is Connected!"))
+    .then((annChannel) =>
+      annChannel.send(global.config.BOTNAME + " Bot is Connected!"),
+    )
     .catch((e) => console.error(e.toString()));
+  guild.members.cache
+    .find((x) => x.user.tag == client.user.tag)
+    .setNickname("[ " + global.config.PREFIX + " ] " + global.config.BOTNAME);
+  console.cmdLoaded(
+    global.config.BOTNAME + " Bot is added to Server: " + guild.name,
+  );
+});
+client.on("guildDelete", (guild) => {
+  console.cmdLoaded(
+    global.config.BOTNAME + " Bot has left the Server: " + guild.name,
+  );
 });
 
 //EXECUTE COMMANDS
