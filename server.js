@@ -6,16 +6,19 @@ const path = require("path");
 const log = require("./settings/log.js");
 const messageLog = require("./settings/messageLog.js");
 const update = require("./settings/events/update.js");
+const lang = require("./settings/lang.json");
+const config = require("./config.json");
 
 //GLOBALS AND CONSTANTS
 const Client = Discord.Client;
 const commands = {};
-global.config = require("./config.json");
+global.config = config;
 global.PREFIX = global.config.PREFIX;
 global.GuildText = Discord.ChannelType.GuildText;
 global.Category = Discord.ChannelType.GuildCategory;
 global.ViewChannel = Discord.PermissionFlagsBits.ViewChannel;
 global.SendMessages = Discord.PermissionFlagsBits.SendMessages;
+global.lang = lang[global.config.lang];
 
 //LOGS
 console.loaded = log.loaded;
@@ -98,7 +101,7 @@ client.on("messageCreate", (message) => {
   if (!message.channel.guild || message.author.bot) return;
   messageLog(message);
   if (message.content.startsWith(`${global.PREFIX}`)) {
-    if (message.content.slice(1).split(" ")[0] in commands)
+    if (message.content.slice(1).split(" ")[0] in commands) {
       try {
         var command = commands[message.content.slice(1).split(" ")[0]];
         var args = message.content.split(" ").splice(1).join(" ") ?? "";
@@ -106,6 +109,7 @@ client.on("messageCreate", (message) => {
       } catch (error) {
         console.log("Error: " + error);
       }
+    } else return message.channel.send(global.lang.settings.wrongCommand.replace("%0", global.config.PREFIX));
   }
 });
 

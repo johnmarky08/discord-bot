@@ -1,7 +1,8 @@
 const commandName = "changenn";
 const version = "1.5.9";
+const permission = 0;
 const description = "Change Your/Someone's Nickname";
-const credit = "John Marky Dev";
+const credits = "John Marky Dev";
 
 function execute(message, args) {
   if (!args) {
@@ -34,7 +35,8 @@ function execute(message, args) {
 module.exports = {
   commandName,
   version,
+  permission,
   description,
-  credit,
+  credits,
   execute,
 };

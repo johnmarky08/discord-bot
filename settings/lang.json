@@ -1,0 +1,47 @@
+{
+  "en": {
+    "settings": {
+      "prefix": "Yo! I'm Here, What Can I Do For You?\nUse %0help For List Of All Commands\n[ %1 ]",
+      "wrongCommand": "Oops! The Command You Just Entered Does Not Exist. Try %0help For List Of All Commands.",
+      "adminOnly": "You Don't Have Permission To Use This Command!",
+      "mainte": "This Command Is Still Being Created By The Admins Or Is Under Maintenance!"
+    },
+    "commands": {
+      "noText": "Put Some Text First!",
+      "noReply": "Reply To An Image First!",
+      "noLink": "Put A Link First!",
+      "err": "Something Went Wrong!\n\nError: %0",
+      "notUid": "The Text You've Enter Is Not An UID!"
+    }
+  },
+  "tl": {
+    "settings": {
+      "prefix": "Yo! Narito Ako, Ano ang Magagawa Ko Para sa Iyo?\nGumamit ng %0help Para sa Listahan ng Lahat ng Mga Utos\n[ %1 ]",
+      "wrongCommand": "Ngek! Hindi ko Maintindihan ang Utos na Sinabi Mo. Subukan ang %0help Para sa Listahan ng Lahat ng Mga Utos.",
+      "adminOnly": "Wala kang Pahintulot Upang Gamitin ang Utos na Ito!",
+      "mainte": "Ang Utos na ito ay ginagawa pa rin ng mga admin o hindi pa naaayos!"
+    },
+    "commands": {
+      "noText": "Maglagay muna ng teksto!",
+      "noReply": "Replyan muna ang isang imahe!",
+      "noLink": "Maglagay muna ng Link!",
+      "err": "May Maling Nangyari! \n\nError: %0",
+      "notUid": "Ang Text na Iyong Nasabi ay Hindi Isang UID!"
+    }
+  },
+  "jp": {
+    "settings": {
+      "prefix": "よ！私はここにいます。何かお手伝いできますか?\n%0help を使用して、すべてのコマンドのリストを表示してください\n[ %1 ]",
+      "wrongCommand": "おっとっと！入力したコマンドは存在しません。すべてのコマンドのリストについては、%0help を試してください。",
+      "adminOnly": "このコマンドを使用する権限がありません!",
+      "mainte": "このコマンドはまだ管理者によって作成されているか、メンテナンス中です!"
+    },
+    "commands": {
+      "noText": "最初にテキストを入れてください！",
+      "noReply": "最初に画像に返信する!",
+      "noLink": "最初にリンクを張ってください！",
+      "err": "問題が発生しました!\n\nエラー: %0",
+      "notUid": "入力したテキストは UID ではありません!"
+    }
+  }
+}
