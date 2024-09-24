@@ -73,7 +73,7 @@ console.logg(`Successfully Loaded: ${filteredFiles.length} Commands`);
 console.logg("Successfully Connected On Muichiro Senpai's Server\n");
 
 //BOT
-const client = new Client({ intents: 131071 });
+const client = new Client({ intents: 13107 });
 client.on("ready", () => {
   console.logg(`Logged in as ${client.user.tag}!`);
   console.logg(
@@ -130,7 +130,7 @@ client.on("messageCreate", (message) => {
             .format("hh:mm:ss A || MM/DD/YYYY"),
         ),
       );
-    var ms = message.content.slice(1).split(" ")[0];
+    var ms = message.content.slice(1).split(" ")[0].toLowerCase();
     var best = similar.findBestMatch(ms, listCommands);
     var bestIndex = best.bestMatchIndex;
     if (best.bestMatch.rating > 0.5) {
@@ -144,13 +144,15 @@ client.on("messageCreate", (message) => {
             )
           )
             return message.reply(global.langText("settings", "adminOnly"));
-        } else if (command.permission === 2) {
+        } else if (command.permission == 2) {
           return message.reply(global.langText("settings", "mainte"));
-        } else if (command.permission === 3) {
+        } else if (command.permission == 3) {
           if (message.author.id !== "651240959417516070")
             return message.reply("Only John Marky Dev Can Use This Command!");
+        }
+        try {
           command.execute(message, args);
-        } else {
+        } catch {
           return message.reply(
             global.langText("settings", "wrongCommand", global.config.PREFIX),
           );
