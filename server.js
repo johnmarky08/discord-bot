@@ -137,7 +137,7 @@ client.on("messageCreate", (message) => {
     if (best.bestMatch.rating > 0.5) {
       try {
         var command = commands[listCommands[bestIndex]];
-        var args = message.content.split(" ").splice(1).join(" ") ?? "";
+        var args = message.content.split(" ").splice(1).join(" ") || "";
         if (command.permission == 1) {
           if (
             !message.member.permissions.has(
