@@ -12,6 +12,7 @@ const update = require("./settings/events/update.js");
 const lang = require("./settings/lang.json");
 const config = require("./config.json");
 const { langText } = require("./settings/events/index.js");
+require("dotenv").config();
 
 //GLOBALS AND CONSTANTS
 const Client = Discord.Client;
@@ -47,7 +48,7 @@ app.listen(port, function (err) {
   console.logg(`Listening On Port: ${port}`);
 });
 app.get("/", function (req, res) {
-  res.redirect("https://muichiro-api.onrender.com/");
+  res.redirect(process.env.API_ROOT_URL);
 });
 app.use("/ping", (req, res) => {
   res.send(new Date());
@@ -64,7 +65,7 @@ filteredFiles.map((file) => {
     "Command " +
       fileName.commandName +
       " Successfully Loaded → Version: " +
-      fileName.version,
+      fileName.version
   );
   listCommands.push(fileName.commandName);
 });
@@ -77,7 +78,7 @@ const client = new Client({ intents: 13107 });
 client.on("ready", () => {
   console.logg(`Logged in as ${client.user.tag}!`);
   console.logg(
-    `${client.guilds.cache.size} Server/s, ${client.users.cache.size} Member/s, ${client.channels.cache.size} Channel/s`,
+    `${client.guilds.cache.size} Server/s, ${client.users.cache.size} Member/s, ${client.channels.cache.size} Channel/s`
   );
   client.user.setPresence({
     activities: [
@@ -94,19 +95,19 @@ client.on("guildCreate", async (guild) => {
   update
     .setup(guild, global.config.main_channels)
     .then((annChannel) =>
-      annChannel.send(global.config.BOTNAME + " Bot is Connected!"),
+      annChannel.send(global.config.BOTNAME + " Bot is Connected!")
     )
     .catch((e) => console.error(e.toString()));
   guild.members.cache
     .find((x) => x.user.tag == client.user.tag)
     .setNickname("[ " + global.config.PREFIX + " ] " + global.config.BOTNAME);
   console.cmdLoaded(
-    global.config.BOTNAME + " Bot is added to Server: " + guild.name,
+    global.config.BOTNAME + " Bot is added to Server: " + guild.name
   );
 });
 client.on("guildDelete", (guild) => {
   console.cmdLoaded(
-    global.config.BOTNAME + " Bot has left the Server: " + guild.name,
+    global.config.BOTNAME + " Bot has left the Server: " + guild.name
   );
 });
 
@@ -127,8 +128,8 @@ client.on("messageCreate", (message) => {
           global.PREFIX,
           require("moment-timezone")
             .tz("Asia/Manila")
-            .format("hh:mm:ss A || MM/DD/YYYY"),
-        ),
+            .format("hh:mm:ss A || MM/DD/YYYY")
+        )
       );
     var ms = message.content.slice(1).split(" ")[0].toLowerCase();
     var best = similar.findBestMatch(ms, listCommands);
@@ -140,7 +141,7 @@ client.on("messageCreate", (message) => {
         if (command.permission == 1) {
           if (
             !message.member.permissions.has(
-              Discord.PermissionFlagsBits.Administrator,
+              Discord.PermissionFlagsBits.Administrator
             )
           )
             return message.reply(global.langText("settings", "adminOnly"));
@@ -154,7 +155,7 @@ client.on("messageCreate", (message) => {
           command.execute(message, args);
         } catch {
           return message.reply(
-            global.langText("settings", "wrongCommand", global.config.PREFIX),
+            global.langText("settings", "wrongCommand", global.config.PREFIX)
           );
         }
       } catch (error) {
@@ -162,11 +163,11 @@ client.on("messageCreate", (message) => {
       }
     } else
       return message.reply(
-        global.langText("settings", "wrongCommand", global.config.PREFIX),
+        global.langText("settings", "wrongCommand", global.config.PREFIX)
       );
   }
 });
 
 update(client);
 
-client.login(process.env["token"]);
+client.login(process.env.BOT_TOKEN);

@@ -8,19 +8,22 @@ async function execute(message, args) {
   const path = require("path");
   const axios = require("axios");
   try {
-    var commandInfo = require(
-      path.join(__dirname, "..", "commands", `${args}.js`),
-    );
+    var commandInfo = require(path.join(
+      __dirname,
+      "..",
+      "commands",
+      `${args}.js`
+    ));
     if (!parseInt(args)) {
       var p = commandInfo.permission,
         _perm =
           p == 1
             ? "Admins"
             : p == 2
-              ? "On Maintenance"
-              : p == 3
-                ? "John Marky Dev"
-                : "Everyone";
+            ? "On Maintenance"
+            : p == 3
+            ? "John Marky Dev"
+            : "Everyone";
       return message.reply(
         "📝 DESCRIPTION OF " +
           args.toUpperCase() +
@@ -33,15 +36,15 @@ async function execute(message, args) {
           "\n» Author: " +
           commandInfo.author +
           "\n» Has Permission: " +
-          _perm,
+          _perm
       );
     }
   } catch {
-    message.reply("Please Wait... ⚙️")
+    message.reply("Please Wait... ⚙️");
     var one = 10;
     var page = parseInt(args) || 1;
     var res = await axios.get(
-      "https://muichiro-api.onrender.com/facts?api_key=muichiro",
+      process.env.API_ROOT_URL + "/facts?api_key=muichiro"
     );
     var factss = res.data.data;
     let text = "";
@@ -70,7 +73,7 @@ async function execute(message, args) {
         listFile.length +
         ` Commands Available In ` +
         global.config.BOTNAME +
-        ` Bot`,
+        ` Bot`
     );
   }
 }
